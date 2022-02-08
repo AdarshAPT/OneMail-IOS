@@ -1,0 +1,66 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.mailclient">
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.READ_CONTACTS" />
+  <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+  <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
+  <application 
+    android:label="OneMail"
+    android:icon="@mipmap/ic_launcher"
+    android:requestLegacyExternalStorage="true" 
+    android:allowBackup="false" 
+    android:largeHeap="true"
+    android:showWhenLocked="true"
+    android:turnScreenOn="true"
+    android:fullBackupOnly="false"
+    >
+
+    <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:exported="true">
+
+      <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme"/>
+
+      <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background" />
+
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <action android:name="android.intent.action.SENDTO"/>
+        <data android:scheme="mailto"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+      </intent-filter>
+
+      <intent-filter>
+        <action android:name="android.intent.action.SEND" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="*/*" />
+      </intent-filter>
+
+      <intent-filter>
+        <action android:name="android.intent.action.SEND_MULTIPLE" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="*/*" />
+      </intent-filter>
+
+    </activity>
+
+    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-4310459535775382~1012273779"/>
+    
+    <activity android:name="com.linusu.flutter_web_auth.CallbackActivity">
+      <intent-filter android:label="flutter_web_auth">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="com.googleusercontent.apps.332032277449-jlujr16c34uotir87cri95v55rqc06a1" />
+        <data android:scheme="onemail" android:pathPrefix="oauth" />
+      </intent-filter>
+    </activity>
+    <meta-data android:name="flutterEmbedding" android:value="2" />
+  </application>
+</manifest>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
+    <g data-name="Group 895">
+        <g style="filter:url(#a)">
+            <circle data-name="Ellipse 255" cx="24" cy="24" r="24" transform="translate(9 9)" style="fill:#d32f2f"/>
+        </g>
+        <path data-name="Rectangle 250" transform="translate(19 19)" style="fill:none" d="M0 0h29v29H0z"/>
+        <path data-name="Path 554" d="M3.208 7.416h2.416a1.212 1.212 0 0 1 1.209 1.208v9.666a1.212 1.212 0 0 1-1.209 1.21H3.208A1.212 1.212 0 0 1 2 18.29V8.624a1.212 1.212 0 0 1 1.208-1.208zm6.041 14.5h9.665a1.212 1.212 0 0 0 1.208-1.208v-14.5A1.212 1.212 0 0 0 18.914 5H9.249a1.212 1.212 0 0 0-1.208 1.208v14.5a1.212 1.212 0 0 0 1.208 1.206zm13.29-14.5h2.416a1.212 1.212 0 0 1 1.208 1.208v9.666a1.212 1.212 0 0 1-1.208 1.21h-2.416a1.212 1.212 0 0 1-1.209-1.21V8.624a1.212 1.212 0 0 1 1.209-1.208z" transform="translate(19.416 20.045)" style="fill:#fff"/>
+    </g>
+</svg>

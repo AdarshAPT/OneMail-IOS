@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "496410317267",
+    "firebase_url": "https://onemail-c2948.firebaseio.com",
+    "project_id": "onemail-c2948",
+    "storage_bucket": "onemail-c2948.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496410317267:android:50e90b093c2d84a5949f26",
+        "android_client_info": {
+          "package_name": "office.hotmail.mymail.email"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "496410317267-te0h8pgi2dvl3up7msbueiaagar1h34d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATbQdoCaJbGQrEO52YZG5bZYjPx9MB4FU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "496410317267-te0h8pgi2dvl3up7msbueiaagar1h34d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-4310459535775382~5694031847"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496410317267:android:1934ed37e02a03e0949f26",
+        "android_client_info": {
+          "package_name": "smart.email.allmail.inbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "496410317267-te0h8pgi2dvl3up7msbueiaagar1h34d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATbQdoCaJbGQrEO52YZG5bZYjPx9MB4FU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "496410317267-te0h8pgi2dvl3up7msbueiaagar1h34d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
