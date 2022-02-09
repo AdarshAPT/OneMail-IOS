@@ -13,6 +13,7 @@ import 'package:oneMail/Utils/navigation_route.dart';
 import 'package:oneMail/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -51,6 +52,102 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  updateSignature(String updatedSignature) async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    await preferences.setString("signature", updatedSignature);
+
+    Fluttertoast.showToast(msg: "Signature updated");
+  }
+
+  showSignatureDialog() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    final TextEditingController signatureController = TextEditingController(
+      text: "${preferences.getString("signature")}",
+    );
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor:
+                themes.isDark.value ? ColorPallete.darkModeColor : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 15,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Signature",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: themes.isDark.value ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: signatureController,
+                    maxLines: 6,
+                    minLines: 5,
+                    cursorColor: themes.isDark.value
+                        ? Colors.white
+                        : ColorPallete.primaryColor,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: themes.isDark.value
+                          ? Colors.grey.withOpacity(0.1)
+                          : Colors.grey.shade100,
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width * 0.8,
+                        maxWidth: MediaQuery.of(context).size.width * 0.8,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    color: ColorPallete.primaryColor,
+                    onPressed: () async {
+                      await updateSignature(signatureController.text);
+                      Navigator.of(context).pop();
+                    },
+                    elevation: 0,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: const Center(
+                        child: Text(
+                          "Update",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -87,34 +184,34 @@ class _SettingsState extends State<Settings> {
           children: [
             // Toggling Theme
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SwitchListTile(
-                dense: true,
-                activeColor: ColorPallete.primaryColor,
-                value: themes.isDark.value,
-                tileColor: Colors.grey.withOpacity(0.2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                onChanged: (val) {
-                  themes.toggle(val);
-                },
-                secondary: Icon(
-                  themes.isDark.value ? FontAwesome.moon_o : Feather.sun,
-                  size: 22,
-                  color: themes.isDark.value ? Colors.white : Colors.black87,
-                ),
-                title: Text(
-                  "Toggle Theme",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: themes.isDark.value ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: SwitchListTile(
+            //     dense: true,
+            //     activeColor: ColorPallete.primaryColor,
+            //     value: themes.isDark.value,
+            //     tileColor: Colors.grey.withOpacity(0.2),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //     onChanged: (val) {
+            //       themes.toggle(val);
+            //     },
+            //     secondary: Icon(
+            //       themes.isDark.value ? FontAwesome.moon_o : Feather.sun,
+            //       size: 22,
+            //       color: themes.isDark.value ? Colors.white : Colors.black87,
+            //     ),
+            //     title: Text(
+            //       "Toggle Theme",
+            //       style: TextStyle(
+            //         fontSize: 14,
+            //         color: themes.isDark.value ? Colors.white : Colors.black,
+            //         fontWeight: FontWeight.w500,
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -136,6 +233,35 @@ class _SettingsState extends State<Settings> {
                 ),
                 title: Text(
                   "Open web links in OneMail",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: themes.isDark.value ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+
+            // Signature
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                tileColor: Colors.grey.withOpacity(0.2),
+                dense: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                leading: Icon(
+                  FontAwesome5Solid.signature,
+                  size: 22,
+                  color: themes.isDark.value ? Colors.white : Colors.black87,
+                ),
+                onTap: () async {
+                  showSignatureDialog();
+                },
+                title: Text(
+                  "Signature",
                   style: TextStyle(
                     fontSize: 14,
                     color: themes.isDark.value ? Colors.white : Colors.black,

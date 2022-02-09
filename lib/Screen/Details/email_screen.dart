@@ -303,7 +303,7 @@ class Details extends StatelessWidget {
   Widget _buildEmailViewer() {
     return Center(
       child: MimeMessageViewer(
-        enableDarkMode: true,
+        enableDarkMode: themes.isDark.value,
         mimeMessage: email.mimeMessage,
         urlLauncherDelegate: (url) async {
           if (config.isOpenInApp.value) {

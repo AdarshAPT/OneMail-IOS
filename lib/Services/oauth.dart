@@ -196,10 +196,17 @@ class Oauth {
           userID: userID,
         );
         return {"token": token, "user": user};
+      } on AuthException catch (e) {
+        rethrow;
+      } on PlatformException catch (e) {
+        rethrow;
+      } on DioError catch (e) {
+        rethrow;
       } catch (e) {
         throw AuthException(ExceptionType.Unknown, "Network error");
       }
     }
+    return null;
   }
 
   Future<Map?> outlookSignin(
@@ -301,10 +308,17 @@ class Oauth {
         );
 
         return {"token": token, "user": user};
+      } on AuthException catch (e) {
+        rethrow;
+      } on PlatformException catch (e) {
+        rethrow;
+      } on DioError catch (e) {
+        rethrow;
       } catch (e) {
         throw AuthException(ExceptionType.Unknown, "Network error");
       }
     }
+    return null;
   }
 
   // Future<OauthToken?> yahooSignin(String email, {addAccount = false}) async {
@@ -433,9 +447,16 @@ class Oauth {
         );
         logSuccess("fine upto here");
         return {"token": token, "user": user};
+      } on AuthException catch (e) {
+        rethrow;
+      } on PlatformException catch (e) {
+        rethrow;
+      } on DioError catch (e) {
+        rethrow;
       } catch (e) {
         throw AuthException(ExceptionType.Unknown, "Network error");
       }
     }
+    return null;
   }
 }

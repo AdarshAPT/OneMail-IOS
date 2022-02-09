@@ -14,13 +14,11 @@ class OutlookAPI {
   final SecureStorage storage = SecureStorage();
   final Dio dio = Dio();
 
-  void notifyOutlook(String historyID, String emailID) async {
+  void notifyOutlook(String historyID, String outlookUserId) async {
     final List<User> users = await storage.getUser();
 
     for (User user in users) {
-      if (user.emailAddress == emailID) {
-        logSuccess("user found");
-
+      if (user.userID == outlookUserId) {
         final response = await http.post(
           Uri.parse(
               'https://login.microsoftonline.com/common/oauth2/v2.0/token'),
@@ -33,8 +31,6 @@ class OutlookAPI {
         );
 
         final OauthToken? token = OauthToken.fromText(response.body);
-
-        logWarning(token.toString());
 
         if (token == null) return;
 

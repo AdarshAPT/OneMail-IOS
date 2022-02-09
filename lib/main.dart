@@ -38,7 +38,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (json['outlook']) {
     final OutlookAPI outlookAPI = OutlookAPI();
 
-    outlookAPI.notifyOutlook(json['resource'], json['emailAddress']);
+    outlookAPI.notifyOutlook(json['resource'], json['outlookUserIds']);
   } else if (json['gmail']) {
     final GmailAPI gmailAPI = GmailAPI();
     try {

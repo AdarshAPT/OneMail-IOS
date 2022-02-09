@@ -586,7 +586,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   children: [
                     InkWell(
                       onTap: () async {
-                        await interstitialAd?.show();
+                        interstitialAd?.show();
                         await handleAuth(context, AuthClient.Google);
                       },
                       child: Image.asset(

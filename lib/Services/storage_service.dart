@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneMail/Exception/authentication_exception.dart';
@@ -66,7 +68,7 @@ class SecureStorage {
     final User user = await getCurrUser();
     final List<String> users = _pref.getStringList("users") ?? [];
 
-    if (user.isOutlook) {
+    if (user.isOutlook && Platform.isAndroid) {
       await Workmanager().cancelByUniqueName(user.userID);
     }
 

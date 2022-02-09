@@ -37,6 +37,7 @@ import 'package:path/path.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thumbnailer/thumbnailer.dart';
 
 class ComposeEmail extends StatefulWidget {
@@ -91,6 +92,12 @@ class _ComposeEmailState extends State<ComposeEmail> {
   RxInt remainingSize = 26214400.obs;
   final totalSizeAllowed = 26214400;
 
+  Future<String> getSignature() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    return preferences.getString("signature")!;
+  }
+
   @override
   initState() {
     if (widget.isReply) {
@@ -123,32 +130,40 @@ class _ComposeEmailState extends State<ComposeEmail> {
           selectionHandleColor: Colors.blue,
         ),
       ),
-      child: editor.HtmlEditor(
-        adjustHeight: true,
-        minHeight: 200,
-        key: _keyEditor,
-        initialContent: widget.forwardMail != null
-            ? '----------Forwarded message----------<br>From: ${widget.forwardMail!.from}<br>Date:  ${DateFormat('EE, MMM d, yyyy, hh:mm a').format(widget.forwardMail!.date)}<br>Subject: ${widget.forwardMail!.subject}<br>To: ${widget.forwardMail!.to}<br>${widget.forwardMail!.cc.isNotEmpty ? 'Cc: ${widget.forwardMail!.cc}' : ''}<br><br>${widget.forwardMail!.body}'
-            : "Compose email",
-        onCreated: (api) {
-          setState(() {
-            _editorApi = api;
-            isInit = true;
-          });
+      child: FutureBuilder<String>(
+          future: getSignature(),
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? editor.HtmlEditor(
+                    adjustHeight: true,
+                    minHeight: 200,
+                    key: _keyEditor,
+                    initialContent: widget.forwardMail != null
+                        ? '----------Forwarded message----------<br>From: ${widget.forwardMail!.from}<br>Date:  ${DateFormat('EE, MMM d, yyyy, hh:mm a').format(widget.forwardMail!.date)}<br>Subject: ${widget.forwardMail!.subject}<br>To: ${widget.forwardMail!.to}<br>${widget.forwardMail!.cc.isNotEmpty ? 'Cc: ${widget.forwardMail!.cc}' : ''}<br><br>${widget.forwardMail!.body}<br><br>${snapshot.data!.replaceAll('\n', "<br>")}'
+                        : snapshot.data!.replaceAll('\n', "<br>"),
+                    onCreated: (api) {
+                      setState(() {
+                        _editorApi = api;
+                        isInit = true;
+                      });
 
-          _editorApi.setColorDocumentForeground(
-            _themes.isDark.value ? Colors.white : Colors.black,
-          );
+                      _editorApi.setColorDocumentForeground(
+                        _themes.isDark.value ? Colors.white : Colors.black,
+                      );
 
-          _editorApi.setColorDocumentBackground(
-            _themes.isDark.value ? ColorPallete.darkModeColor : Colors.white,
-          );
-        },
-      ),
+                      _editorApi.setColorDocumentBackground(
+                        _themes.isDark.value
+                            ? ColorPallete.darkModeColor
+                            : Colors.white,
+                      );
+                    },
+                  )
+                : Container();
+          }),
     );
   }
 
-  Widget htmlToobar() {
+  Widget htmlToolbar() {
     return Material(
       elevation: 10,
       color: _themes.isDark.value ? ColorPallete.darkModeColor : Colors.white,
@@ -1310,157 +1325,162 @@ class _ComposeEmailState extends State<ComposeEmail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:
-          _themes.isDark.value ? const Color(0xff121212) : Colors.white,
-      bottomSheet: isInit ? htmlToobar() : const SizedBox(height: 0),
-      // floatingActionButton: Obx(
-      //   () => Column(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: [
-      //       FloatingActionButton(
-      //         onPressed: () => showTemplateModalSheet(context),
-      //         backgroundColor: Colors.red.shade700,
-      //         heroTag: "1",
-      //         child: SvgPicture.asset(
-      //           'assets/fab.svg',
-      //         ),
-      //       ),
-      //       const SizedBox(
-      //         height: 10,
-      //       ),
-      // FloatingActionButton(
-      //   backgroundColor: ColorPallete.primaryColor,
-      //   onPressed: () => sendEmail(context),
-      //   heroTag: "2",
-      //   child: !_isSending.value
-      //       ? const Icon(
-      //           Ionicons.send,
-      //           color: Colors.white,
-      //         )
-      // : ,
-      // ),
-      //     const SizedBox(
-      //       height: 60,
-      //     ),
-      //   ],
-      // ),
-      // ),
-      appBar: AppBar(
-        title: Text(
-          widget.isReply
-              ? "Reply"
-              : widget.forwardMail != null
-                  ? "Forward Mail"
-                  : "Compose Mail",
-          style: TextStyle(
-            fontSize: 16,
-            color: _themes.isDark.value ? Colors.white : Colors.black,
-          ),
-        ),
-        iconTheme: IconThemeData(
-          color:
-              _themes.isDark.value ? Colors.white : ColorPallete.primaryColor,
-        ),
-        elevation: 0,
-        systemOverlayStyle: Platform.isAndroid
-            ? SystemUiOverlayStyle(
-                statusBarColor: !_themes.isDark.value
-                    ? Colors.white
-                    : ColorPallete.darkModeColor,
-                statusBarBrightness:
-                    !_themes.isDark.value ? Brightness.dark : Brightness.light,
-                statusBarIconBrightness:
-                    !_themes.isDark.value ? Brightness.dark : Brightness.light,
-              )
-            : null,
+    return SafeArea(
+      top: false,
+      child: Scaffold(
         backgroundColor:
-            _themes.isDark.value ? ColorPallete.darkModeColor : Colors.white,
-        actions: [
-          IconButton(
-            onPressed: () => showTemplateModalSheet(context),
-            icon: Icon(
-              Icons.add,
-              color: _themes.isDark.value
-                  ? Colors.white
-                  : ColorPallete.primaryColor,
-              size: 27,
+            _themes.isDark.value ? const Color(0xff121212) : Colors.white,
+        bottomSheet: isInit ? htmlToolbar() : const SizedBox(height: 0),
+        // floatingActionButton: Obx(
+        //   () => Column(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       FloatingActionButton(
+        //         onPressed: () => showTemplateModalSheet(context),
+        //         backgroundColor: Colors.red.shade700,
+        //         heroTag: "1",
+        //         child: SvgPicture.asset(
+        //           'assets/fab.svg',
+        //         ),
+        //       ),
+        //       const SizedBox(
+        //         height: 10,
+        //       ),
+        // FloatingActionButton(
+        //   backgroundColor: ColorPallete.primaryColor,
+        //   onPressed: () => sendEmail(context),
+        //   heroTag: "2",
+        //   child: !_isSending.value
+        //       ? const Icon(
+        //           Ionicons.send,
+        //           color: Colors.white,
+        //         )
+        // : ,
+        // ),
+        //     const SizedBox(
+        //       height: 60,
+        //     ),
+        //   ],
+        // ),
+        // ),
+        appBar: AppBar(
+          title: Text(
+            widget.isReply
+                ? "Reply"
+                : widget.forwardMail != null
+                    ? "Forward Mail"
+                    : "Compose Mail",
+            style: TextStyle(
+              fontSize: 16,
+              color: _themes.isDark.value ? Colors.white : Colors.black,
             ),
           ),
-          IconButton(
-            onPressed: () => _attachFiles(context),
-            icon: Icon(
-              Ionicons.ios_attach,
-              color: _themes.isDark.value
-                  ? Colors.white
-                  : ColorPallete.primaryColor,
-              size: 27,
-            ),
+          iconTheme: IconThemeData(
+            color:
+                _themes.isDark.value ? Colors.white : ColorPallete.primaryColor,
           ),
-          Obx(
-            () => !_isSending.value
-                ? IconButton(
-                    onPressed: () => sendEmail(context),
-                    icon: Icon(
-                      IconlyBold.send,
-                      color: _themes.isDark.value
-                          ? Colors.white
-                          : ColorPallete.primaryColor,
+          elevation: 0,
+          systemOverlayStyle: Platform.isAndroid
+              ? SystemUiOverlayStyle(
+                  statusBarColor: !_themes.isDark.value
+                      ? Colors.white
+                      : ColorPallete.darkModeColor,
+                  statusBarBrightness: !_themes.isDark.value
+                      ? Brightness.dark
+                      : Brightness.light,
+                  statusBarIconBrightness: !_themes.isDark.value
+                      ? Brightness.dark
+                      : Brightness.light,
+                )
+              : null,
+          backgroundColor:
+              _themes.isDark.value ? ColorPallete.darkModeColor : Colors.white,
+          actions: [
+            IconButton(
+              onPressed: () => showTemplateModalSheet(context),
+              icon: Icon(
+                Icons.add,
+                color: _themes.isDark.value
+                    ? Colors.white
+                    : ColorPallete.primaryColor,
+                size: 27,
+              ),
+            ),
+            IconButton(
+              onPressed: () => _attachFiles(context),
+              icon: Icon(
+                Ionicons.ios_attach,
+                color: _themes.isDark.value
+                    ? Colors.white
+                    : ColorPallete.primaryColor,
+                size: 27,
+              ),
+            ),
+            Obx(
+              () => !_isSending.value
+                  ? IconButton(
+                      onPressed: () => sendEmail(context),
+                      icon: Icon(
+                        IconlyBold.send,
+                        color: _themes.isDark.value
+                            ? Colors.white
+                            : ColorPallete.primaryColor,
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CupertinoActivityIndicator(),
                     ),
-                  )
-                : const SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CupertinoActivityIndicator(),
+            )
+          ],
+        ),
+        body: FutureBuilder<User>(
+            future: getAllUser(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ScrollConfiguration(
+                  behavior: CustomBehavior(),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _fromField(context, snapshot.requireData),
+                            divider,
+                            _emailField(
+                                _to, "To", _fromController, _fromNode, context),
+                            divider,
+                            _emailField(
+                                _cc, "Cc", _ccController, _ccNode, context),
+                            divider,
+                            _emailField(
+                                _bcc, "Bcc", _bccController, _bccNode, context),
+                            divider,
+                            _subjectField(),
+                            divider,
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            htmlEditor(context),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            showAttachments(context),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                          ],
+                        )),
                   ),
-          )
-        ],
+                );
+              } else {
+                return Container();
+              }
+            }),
       ),
-      body: FutureBuilder<User>(
-          future: getAllUser(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ScrollConfiguration(
-                behavior: CustomBehavior(),
-                child: SingleChildScrollView(
-                  child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _fromField(context, snapshot.requireData),
-                          divider,
-                          _emailField(
-                              _to, "To", _fromController, _fromNode, context),
-                          divider,
-                          _emailField(
-                              _cc, "Cc", _ccController, _ccNode, context),
-                          divider,
-                          _emailField(
-                              _bcc, "Bcc", _bccController, _bccNode, context),
-                          divider,
-                          _subjectField(),
-                          divider,
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          htmlEditor(context),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          showAttachments(context),
-                          const SizedBox(
-                            height: 50,
-                          ),
-                        ],
-                      )),
-                ),
-              );
-            } else {
-              return Container();
-            }
-          }),
     );
   }
 }
